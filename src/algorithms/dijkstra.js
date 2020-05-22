@@ -48,5 +48,14 @@ function updateNeighbors(grid, node) {
         neighbor.previousNode = node
     }
 }
+function getNodesInShortestPath(goalNode) {
+    let nodes = []
+    let temp = goalNode
+    while (temp != null) {
+        nodes.push(temp)
+        temp = temp.previousNode
+    }
+    return nodes
+}
 
 export { dijkstra, getNodesInShortestPath }
