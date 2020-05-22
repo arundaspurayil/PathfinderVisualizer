@@ -37,4 +37,8 @@ function getNeighbors(grid, node) {
     return neighbors.filter((neighbor) => !neighbor.isVisited)
 }
 
+function sortNodesByDistance(nodes) {
+    nodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance)
+}
+
 export { dijkstra, getNodesInShortestPath }
