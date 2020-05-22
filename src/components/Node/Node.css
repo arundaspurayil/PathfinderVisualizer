@@ -9,3 +9,11 @@
     margin-top: -1px;
     padding: 0;
 }
+
+.node-start {
+    background-color: green;
+}
+
+.node-goal {
+    background-color: red;
+}
