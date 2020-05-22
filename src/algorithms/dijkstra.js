@@ -40,5 +40,13 @@ function getNeighbors(grid, node) {
 function sortNodesByDistance(nodes) {
     nodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance)
 }
+function updateNeighbors(grid, node) {
+    let neighbors = getNeighbors(grid, node)
+    // for each neighbor
+    for (let neighbor of neighbors) {
+        neighbor.distance = node.distance + 1
+        neighbor.previousNode = node
+    }
+}
 
 export { dijkstra, getNodesInShortestPath }
