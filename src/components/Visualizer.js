@@ -45,22 +45,40 @@ function Visualizer() {
         const startNode = grid[startNodeRow][startNodeCol]
         const goalNode = grid[goalNodeRow][goalNodeCol]
         const visitedNodes = dijkstra(grid, startNode, goalNode)
-        animateDijkstra(visitedNodes)
         const shortestPathToGoal = getNodesInShortestPath(goalNode)
-        animateShortestPath(shortestPathToGoal)
+
+        animateDijkstra(visitedNodes, shortestPathToGoal)
+        //animateShortestPath(shortestPathToGoal, visitedNodes.length)
     }
-    function animateShortestPath(nodes) {
+    function animateShortestPath(nodes, length) {
+        let count = 0
         for (let node of nodes) {
-            document.getElementById(`node-${node.row}-${node.col}`).className =
-                'node node-shortest-path'
+            setTimeout(function () {
+                document.getElementById(
+                    `node-${node.row}-${node.col}`
+                ).className = 'node node-shortest-path'
+            }, 100 * count)
+            count += 1
         }
     }
 
-    function animateDijkstra(visitedNodes) {
+    function animateDijkstra(visitedNodes, shortestPathToGoal) {
         const newGrid = [...grid]
+
+        console.log(visitedNodes)
+        let count = 0
         for (let node of visitedNodes) {
-            document.getElementById(`node-${node.row}-${node.col}`).className +=
-                ' node-visited'
+            setTimeout(function () {
+                document.getElementById(
+                    `node-${node.row}-${node.col}`
+                ).className += ' node-visited'
+            }, 10 * count)
+            if (node.isGoal) {
+                setTimeout(function () {
+                    animateShortestPath(shortestPathToGoal)
+                }, 10 * count)
+            }
+            count += 1
         }
         setGrid(newGrid)
     }
