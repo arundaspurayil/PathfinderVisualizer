@@ -10,6 +10,11 @@ function Node(props) {
         ? 'node-goal'
         : ''
 
-    return <div className={`node ${propertyClassName}`} />
+    return (
+        <div
+            className={`node  ${propertyClassName}`}
+            id={`node-${properties.row}-${properties.col}`}
+        />
+    )
 }
 export default Node

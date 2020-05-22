@@ -11,9 +11,17 @@
 }
 
 .node-start {
-    background-color: green;
+    background-color: green !important;
 }
 
 .node-goal {
-    background-color: red;
+    background-color: red !important;
+}
+
+.node-visited {
+    background-color: yellow;
+}
+
+.node-shortest-path {
+    background-color: black;
 }
