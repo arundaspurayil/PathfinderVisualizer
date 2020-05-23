@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Node from './Node/Node'
 import './Visualizer.css'
 
 import dijkstra from '../algorithms/dijkstra'
 import bfs from '../algorithms/bfs'
+import dfs from '../algorithms/dfs'
+
 import getNodesInShortestPath from '../algorithms/getNodesInShortestPath'
 
 const ROWS = 20
@@ -11,11 +13,12 @@ const COLUMNS = 50
 
 const startNodeRow = 10
 const startNodeCol = 5
-const goalNodeRow = 10
+const goalNodeRow = 5
 const goalNodeCol = 15
 
 function Visualizer() {
     const [grid, setGrid] = useState([])
+    const [algorithm, setAlgorithm] = useState('dijkstra')
 
     useEffect(() => {
         let nodes = []
@@ -27,7 +30,7 @@ function Visualizer() {
             nodes.push(currentRow)
         }
         setGrid(nodes)
-    }, [])
+    }, [algorithm])
 
     function createNode(row, col) {
         return {
@@ -41,25 +44,7 @@ function Visualizer() {
             previousNode: null,
         }
     }
-    function handleBfsClick(event) {
-        event.preventDefault()
-        const startNode = grid[startNodeRow][startNodeCol]
-        const goalNode = grid[goalNodeRow][goalNodeCol]
-        const visitedNodes = bfs(grid, startNode)
-        const shortestPathToGoal = getNodesInShortestPath(goalNode)
 
-        animateVisitedNodes(visitedNodes, shortestPathToGoal)
-    }
-    function handleDijkstraClick(event) {
-        event.preventDefault()
-        const startNode = grid[startNodeRow][startNodeCol]
-        const goalNode = grid[goalNodeRow][goalNodeCol]
-        const visitedNodes = dijkstra(grid, startNode)
-        const shortestPathToGoal = getNodesInShortestPath(goalNode)
-
-        animateVisitedNodes(visitedNodes, shortestPathToGoal)
-        //animateShortestPath(shortestPathToGoal, visitedNodes.length)
-    }
     function animateShortestPath(nodes, length) {
         let count = 0
         for (let node of nodes) {
@@ -92,6 +77,21 @@ function Visualizer() {
         setGrid(newGrid)
     }
 
+    function runAlgorithm(event) {
+        event.preventDefault()
+
+        const startNode = grid[startNodeRow][startNodeCol]
+        const goalNode = grid[goalNodeRow][goalNodeCol]
+        let visitedNodes = []
+        if (algorithm === 'dijkstra') visitedNodes = dijkstra(grid, startNode)
+        if (algorithm === 'bfs') visitedNodes = bfs(grid, startNode)
+        if (algorithm === 'dfs') visitedNodes = dfs(grid, startNode)
+
+        const shortestPathToGoal = getNodesInShortestPath(goalNode)
+
+        animateVisitedNodes(visitedNodes, shortestPathToGoal)
+    }
+
     const displayGrid = grid.map((row, rowIdx) => {
         return (
             <div className="row" key={rowIdx}>
@@ -103,12 +103,20 @@ function Visualizer() {
     })
     return (
         <div>
-            <button type="button" onClick={handleDijkstraClick}>
-                Dijkstra
-            </button>
-            <button type="button" onClick={handleBfsClick}>
-                BFS
-            </button>
+            <form onSubmit={runAlgorithm}>
+                <select
+                    value={algorithm}
+                    onChange={(event) => {
+                        setAlgorithm(event.target.value)
+                    }}
+                >
+                    <option value="dijkstra">Dijkstra</option>
+                    <option value="bfs">BFS</option>
+                    <option value="dfs">DFS</option>
+                </select>
+                <button type="submit">Visualize!</button>
+            </form>
+
             <div className="grid">{displayGrid}</div>
         </div>
     )
