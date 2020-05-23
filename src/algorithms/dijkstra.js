@@ -24,6 +24,7 @@ function getAllNodes(grid) {
             nodes.push(grid[row][col])
         }
     }
+
     return nodes
 }
 

@@ -7,8 +7,8 @@ import { dijkstra, getNodesInShortestPath } from '../algorithms/dijkstra'
 const ROWS = 20
 const COLUMNS = 50
 
-const startNodeRow = 3
-const startNodeCol = 10
+const startNodeRow = 1
+const startNodeCol = 1
 const goalNodeRow = 9
 const goalNodeCol = 30
 
@@ -65,7 +65,6 @@ function Visualizer() {
     function animateDijkstra(visitedNodes, shortestPathToGoal) {
         const newGrid = [...grid]
 
-        console.log(visitedNodes)
         let count = 0
         for (let node of visitedNodes) {
             setTimeout(function () {
