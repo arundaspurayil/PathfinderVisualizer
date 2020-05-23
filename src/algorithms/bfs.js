@@ -1,20 +1,25 @@
 function bfs(grid, startNode) {
     let visitedNodes = []
     let queue = [startNode]
-    startNode.visited = true
 
     while (queue.length > 0) {
         let currentNode = queue.shift()
-        if (currentNode.isGoal) {
-            return
-        }
+        if (currentNode.isVisited === false) {
+            currentNode.isVisited = true
+            visitedNodes.push(currentNode)
 
-        let neighborNodes = getNeighbors(grid, currentNode)
-        neighborNodes.forEach((node) => {
-            node.visited = true
-            queue.push(node)
-        })
+            if (currentNode.isGoal) {
+                return visitedNodes
+            }
+
+            let neighborNodes = getNeighbors(grid, currentNode)
+            neighborNodes.forEach((node) => {
+                node.previousNode = currentNode
+                queue.push(node)
+            })
+        }
     }
+    return visitedNodes
 }
 
 function getNeighbors(grid, node) {
@@ -26,3 +31,5 @@ function getNeighbors(grid, node) {
     if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1])
     return neighbors.filter((neighbor) => !neighbor.isVisited)
 }
+
+export default bfs

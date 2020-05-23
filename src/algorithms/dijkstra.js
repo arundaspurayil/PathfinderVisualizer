@@ -1,4 +1,4 @@
-function dijkstra(grid, startNode, goalNode) {
+function dijkstra(grid, startNode) {
     let visitedNodes = []
     startNode.distance = 0
     let unvisitedNodes = getAllNodes(grid)
@@ -49,14 +49,5 @@ function updateNeighbors(grid, node) {
         neighbor.previousNode = node
     }
 }
-function getNodesInShortestPath(goalNode) {
-    let nodes = []
-    let temp = goalNode
-    while (temp != null) {
-        nodes.unshift(temp)
-        temp = temp.previousNode
-    }
-    return nodes
-}
 
-export { dijkstra, getNodesInShortestPath }
+export default dijkstra

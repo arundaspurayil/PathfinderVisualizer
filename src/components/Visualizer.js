@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react'
 import Node from './Node/Node'
 import './Visualizer.css'
 
-import { dijkstra, getNodesInShortestPath } from '../algorithms/dijkstra'
+import dijkstra from '../algorithms/dijkstra'
+import bfs from '../algorithms/bfs'
+import getNodesInShortestPath from '../algorithms/getNodesInShortestPath'
 
 const ROWS = 20
 const COLUMNS = 50
 
-const startNodeRow = 1
-const startNodeCol = 1
-const goalNodeRow = 9
-const goalNodeCol = 30
+const startNodeRow = 10
+const startNodeCol = 5
+const goalNodeRow = 10
+const goalNodeCol = 15
 
 function Visualizer() {
     const [grid, setGrid] = useState([])
@@ -39,15 +41,23 @@ function Visualizer() {
             previousNode: null,
         }
     }
-
-    function handleClick(event) {
+    function handleBfsClick(event) {
         event.preventDefault()
         const startNode = grid[startNodeRow][startNodeCol]
         const goalNode = grid[goalNodeRow][goalNodeCol]
-        const visitedNodes = dijkstra(grid, startNode, goalNode)
+        const visitedNodes = bfs(grid, startNode)
         const shortestPathToGoal = getNodesInShortestPath(goalNode)
 
-        animateDijkstra(visitedNodes, shortestPathToGoal)
+        animateVisitedNodes(visitedNodes, shortestPathToGoal)
+    }
+    function handleDijkstraClick(event) {
+        event.preventDefault()
+        const startNode = grid[startNodeRow][startNodeCol]
+        const goalNode = grid[goalNodeRow][goalNodeCol]
+        const visitedNodes = dijkstra(grid, startNode)
+        const shortestPathToGoal = getNodesInShortestPath(goalNode)
+
+        animateVisitedNodes(visitedNodes, shortestPathToGoal)
         //animateShortestPath(shortestPathToGoal, visitedNodes.length)
     }
     function animateShortestPath(nodes, length) {
@@ -62,7 +72,7 @@ function Visualizer() {
         }
     }
 
-    function animateDijkstra(visitedNodes, shortestPathToGoal) {
+    function animateVisitedNodes(visitedNodes, shortestPathToGoal) {
         const newGrid = [...grid]
 
         let count = 0
@@ -93,8 +103,11 @@ function Visualizer() {
     })
     return (
         <div>
-            <button type="button" onClick={handleClick}>
+            <button type="button" onClick={handleDijkstraClick}>
                 Dijkstra
+            </button>
+            <button type="button" onClick={handleBfsClick}>
+                BFS
             </button>
             <div className="grid">{displayGrid}</div>
         </div>
