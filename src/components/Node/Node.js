@@ -2,18 +2,21 @@ import React from 'react'
 import './Node.css'
 
 function Node(props) {
-    const { properties } = props
+    const { onMouseDown } = props
+    const { isStart, isGoal, row, col } = props.properties
 
-    const propertyClassName = properties.isStart
-        ? 'node-start'
-        : properties.isGoal
-        ? 'node-goal'
-        : ''
+    const propertyClassName = isStart ? 'node-start' : isGoal ? 'node-goal' : ''
 
     return (
         <div
             className={`node  ${propertyClassName}`}
-            id={`node-${properties.row}-${properties.col}`}
+            id={`node-${row}-${col}`}
+            onMouseDown={(event) => {
+                onMouseDown(event, row, col)
+            }}
+            onMouseUp={(event) => {
+                onMouseDown(event, row, col)
+            }}
         />
     )
 }

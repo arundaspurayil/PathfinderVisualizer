@@ -59,11 +59,6 @@ function Visualizer() {
                     'class',
                     'node node-shortest-path'
                 )
-
-                /*
-                document.getElementById(
-                    `node-${node.row}-${node.col}`
-                ).className = 'node node-shortest-path'*/
             }, 100 * count)
             count += 1
         }
@@ -76,9 +71,6 @@ function Visualizer() {
             setTimeout(function () {
                 rowGrid[node.row].children[node.col].attributes[0].nodeValue +=
                     ' node-visited'
-                /*document.getElementById(
-                    `node-${node.row}-${node.col}`
-                ).className += ' node-visited'*/
             }, 10 * count)
             if (node.isGoal) {
                 setTimeout(function () {
@@ -108,6 +100,7 @@ function Visualizer() {
             }
         }
     }
+    function handleDrag(event, row, col) {}
     function runAlgorithm(event) {
         event.preventDefault()
 
@@ -130,7 +123,13 @@ function Visualizer() {
         return (
             <div className="row" key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                    return <Node key={rowIdx + nodeIdx} properties={node} />
+                    return (
+                        <Node
+                            key={rowIdx + nodeIdx}
+                            properties={node}
+                            onMouseDown={handleDrag}
+                        />
+                    )
                 })}
             </div>
         )
