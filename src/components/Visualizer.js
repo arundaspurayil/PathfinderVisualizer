@@ -5,23 +5,26 @@ import './Visualizer.css'
 import dijkstra from '../algorithms/dijkstra'
 import bfs from '../algorithms/bfs'
 import dfs from '../algorithms/dfs'
+import astar from '../algorithms/astar'
 
 import getNodesInShortestPath from '../algorithms/getNodesInShortestPath'
 
 const ROWS = 20
-const COLUMNS = 50
+const COLUMNS = 30
 
-const startNodeRow = 10
+const startNodeRow = 9
 const startNodeCol = 5
-const goalNodeRow = 5
-const goalNodeCol = 15
+const goalNodeRow = 3
+const goalNodeCol = 10
 
 function Visualizer() {
     const [grid, setGrid] = useState([])
     const [algorithm, setAlgorithm] = useState('dijkstra')
+    const gridRef = useRef(null)
 
     useEffect(() => {
         let nodes = []
+
         for (let row = 0; row < ROWS; row++) {
             let currentRow = []
             for (let col = 0; col < COLUMNS; col++) {
@@ -29,6 +32,7 @@ function Visualizer() {
             }
             nodes.push(currentRow)
         }
+
         setGrid(nodes)
     }, [algorithm])
 
@@ -47,25 +51,34 @@ function Visualizer() {
 
     function animateShortestPath(nodes, length) {
         let count = 0
+        let rowGrid = Array.from(gridRef.current.children)
+
         for (let node of nodes) {
             setTimeout(function () {
+                rowGrid[node.row].children[node.col].setAttribute(
+                    'class',
+                    'node node-shortest-path'
+                )
+
+                /*
                 document.getElementById(
                     `node-${node.row}-${node.col}`
-                ).className = 'node node-shortest-path'
+                ).className = 'node node-shortest-path'*/
             }, 100 * count)
             count += 1
         }
     }
 
     function animateVisitedNodes(visitedNodes, shortestPathToGoal) {
-        const newGrid = [...grid]
-
         let count = 0
+        let rowGrid = Array.from(gridRef.current.children)
         for (let node of visitedNodes) {
             setTimeout(function () {
-                document.getElementById(
+                rowGrid[node.row].children[node.col].attributes[0].nodeValue +=
+                    ' node-visited'
+                /*document.getElementById(
                     `node-${node.row}-${node.col}`
-                ).className += ' node-visited'
+                ).className += ' node-visited'*/
             }, 10 * count)
             if (node.isGoal) {
                 setTimeout(function () {
@@ -74,18 +87,39 @@ function Visualizer() {
             }
             count += 1
         }
-        setGrid(newGrid)
     }
 
+    function resetStyling() {
+        let rowGrid = Array.from(gridRef.current.children)
+
+        for (let row = 0; row < ROWS; row++) {
+            for (let col = 0; col < COLUMNS; col++) {
+                const isStart = row === startNodeRow && col === startNodeCol
+                const isGoal = row === goalNodeRow && col === goalNodeCol
+
+                const node = rowGrid[row].children[col]
+                const attribute = isStart
+                    ? 'node node-start'
+                    : isGoal
+                    ? 'node node-goal'
+                    : 'node'
+
+                node.setAttribute('class', attribute)
+            }
+        }
+    }
     function runAlgorithm(event) {
         event.preventDefault()
 
+        resetStyling()
         const startNode = grid[startNodeRow][startNodeCol]
         const goalNode = grid[goalNodeRow][goalNodeCol]
         let visitedNodes = []
         if (algorithm === 'dijkstra') visitedNodes = dijkstra(grid, startNode)
-        if (algorithm === 'bfs') visitedNodes = bfs(grid, startNode)
-        if (algorithm === 'dfs') visitedNodes = dfs(grid, startNode)
+        else if (algorithm === 'bfs') visitedNodes = bfs(grid, startNode)
+        else if (algorithm === 'dfs') visitedNodes = dfs(grid, startNode)
+        else if (algorithm === 'astar')
+            visitedNodes = astar(grid, startNode, goalNode)
 
         const shortestPathToGoal = getNodesInShortestPath(goalNode)
 
@@ -103,21 +137,23 @@ function Visualizer() {
     })
     return (
         <div>
-            <form onSubmit={runAlgorithm}>
-                <select
-                    value={algorithm}
-                    onChange={(event) => {
-                        setAlgorithm(event.target.value)
-                    }}
-                >
-                    <option value="dijkstra">Dijkstra</option>
-                    <option value="bfs">BFS</option>
-                    <option value="dfs">DFS</option>
-                </select>
-                <button type="submit">Visualize!</button>
-            </form>
-
-            <div className="grid">{displayGrid}</div>
+            <select
+                value={algorithm}
+                onChange={(event) => {
+                    setAlgorithm(event.target.value)
+                }}
+            >
+                <option value="dijkstra">Dijkstra</option>+
+                <option value="astar">A*</option>
+                <option value="bfs">BFS</option>
+                <option value="dfs">DFS</option>
+            </select>
+            <button type="button" onClick={runAlgorithm}>
+                Visualize!
+            </button>
+            <div ref={gridRef} className="grid">
+                {displayGrid}
+            </div>
         </div>
     )
 }
