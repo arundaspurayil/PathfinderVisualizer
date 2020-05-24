@@ -15,8 +15,9 @@ export default function astar(grid, startNode, goalNode) {
 
         const neighbors = getNeighbors(grid, currentNode)
         neighbors.forEach((node) => {
-            if (!node.isVisited) {
-                node.g = currentNode.g + 1
+            const newCost = currentNode.g + 1
+            if (!node.isVisited || newCost < node.g) {
+                node.g = newCost
                 node.h = calculateHeuristic(node, goalNode)
                 node.distance = node.g + node.h
                 node.isVisited = true

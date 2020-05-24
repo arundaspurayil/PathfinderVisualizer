@@ -15,7 +15,7 @@ const COLUMNS = 30
 const startNodeRow = 9
 const startNodeCol = 5
 const goalNodeRow = 3
-const goalNodeCol = 10
+const goalNodeCol = 29
 
 function Visualizer() {
     const [grid, setGrid] = useState([])
