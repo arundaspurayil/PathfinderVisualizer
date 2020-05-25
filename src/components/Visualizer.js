@@ -17,6 +17,8 @@ function Visualizer() {
     const [algorithm, setAlgorithm] = useState('dijkstra')
     const [startNode, setStartNode] = useState({ row: 3, col: 5 })
     const [goalNode, setGoalNode] = useState({ row: 3, col: 29 })
+    const [mouseDown, setMouseDown] = useState(false)
+
     const gridRef = useRef(null)
 
     useEffect(() => {
@@ -28,22 +30,31 @@ function Visualizer() {
                 isGoal: row === goalNode.row && col === goalNode.col,
                 distance: Infinity,
                 isVisited: false,
-                isWall: false,
+                isWall: checkIfWall(row, col),
                 previousNode: null,
             }
         }
-        let nodes = []
+        function createGrid() {
+            let nodes = []
 
-        for (let row = 0; row < ROWS; row++) {
-            let currentRow = []
-            for (let col = 0; col < COLUMNS; col++) {
-                currentRow.push(createNode(row, col))
+            for (let row = 0; row < ROWS; row++) {
+                let currentRow = []
+                for (let col = 0; col < COLUMNS; col++) {
+                    currentRow.push(createNode(row, col))
+                }
+                nodes.push(currentRow)
             }
-            nodes.push(currentRow)
+            return nodes
         }
 
-        setGrid(nodes)
-    }, [algorithm, startNode, goalNode])
+        if (!mouseDown) setGrid(createGrid())
+    }, [algorithm, startNode, goalNode, mouseDown])
+
+    function checkIfWall(row, col) {
+        const element = document.getElementById(`node-${row}-${col}`)
+        if (element && element.className.includes('node-wall')) return true
+        return false
+    }
 
     function animateShortestPath(nodes, length) {
         let count = 0
@@ -86,12 +97,15 @@ function Visualizer() {
             for (let col = 0; col < COLUMNS; col++) {
                 const isStart = row === startNode.row && col === startNode.col
                 const isGoal = row === goalNode.row && col === goalNode.col
+                const isWall = checkIfWall(row, col)
 
                 const node = rowGrid[row].children[col]
                 const attribute = isStart
                     ? 'node node-start'
                     : isGoal
                     ? 'node node-goal'
+                    : isWall
+                    ? 'node node-wall'
                     : 'node'
 
                 node.setAttribute('class', attribute)
@@ -115,6 +129,24 @@ function Visualizer() {
         animateVisitedNodes(visitedNodes, shortestPathToGoal)
     }
 
+    function handleMouseDown(event, row, col) {
+        event.preventDefault()
+        setMouseDown(true)
+
+        document.getElementById(`node-${row}-${col}`).className += ' node-wall'
+    }
+
+    function handleMouseMove(event, row, col) {
+        event.preventDefault()
+        if (mouseDown)
+            document.getElementById(`node-${row}-${col}`).className +=
+                ' node-wall'
+    }
+
+    function handleMouseUp(event) {
+        event.preventDefault()
+        setMouseDown(false)
+    }
     const displayGrid = grid.map((row, rowIdx) => {
         return (
             <div className="row" key={rowIdx}>
@@ -125,12 +157,16 @@ function Visualizer() {
                             properties={node}
                             setStartNode={setStartNode}
                             setGoalNode={setGoalNode}
+                            handleMouseDown={handleMouseDown}
+                            handleMouseMove={handleMouseMove}
+                            handleMouseUp={handleMouseUp}
                         />
                     )
                 })}
             </div>
         )
     })
+
     return (
         <div>
             <select

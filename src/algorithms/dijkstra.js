@@ -6,6 +6,7 @@ function dijkstra(grid, startNode) {
         sortNodesByDistance(unvisitedNodes)
         const closestNode = unvisitedNodes.shift()
         closestNode.isVisited = true
+        if (closestNode.isWall) continue
         visitedNodes.push(closestNode)
         if (closestNode.isGoal) {
             return visitedNodes

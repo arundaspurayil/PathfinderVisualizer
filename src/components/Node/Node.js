@@ -1,11 +1,23 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './Node.css'
 
 function Node(props) {
-    const { setStartNode, setGoalNode } = props
-    const { isStart, isGoal, row, col } = props.properties
+    const {
+        setStartNode,
+        setGoalNode,
+        handleMouseDown,
+        handleMouseMove,
+        handleMouseUp,
+    } = props
+    const { isStart, isGoal, isWall, row, col } = props.properties
 
-    const propertyClassName = isStart ? 'node-start' : isGoal ? 'node-goal' : ''
+    const propertyClassName = isStart
+        ? 'node-start'
+        : isGoal
+        ? 'node-goal'
+        : isWall
+        ? 'node-wall'
+        : ''
 
     function handleDragStart(event) {
         const { target } = event
@@ -48,6 +60,13 @@ function Node(props) {
             onDragStart={handleDragStart}
             onDragOver={handleOnDragOver}
             onDrop={handleDrop}
+            onMouseDown={(event) => {
+                handleMouseDown(event, row, col)
+            }}
+            onMouseMove={(event) => {
+                handleMouseMove(event, row, col)
+            }}
+            onMouseUp={handleMouseUp}
             id={`node-${row}-${col}`}
         />
     )
