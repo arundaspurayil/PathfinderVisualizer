@@ -2,7 +2,7 @@ import React from 'react'
 import './Node.css'
 
 function Node(props) {
-    const { onDragOver, onDrop } = props
+    const { onDragOver, onDrop, setStartNode } = props
     const { isStart, isGoal, row, col } = props.properties
 
     const propertyClassName = isStart ? 'node-start' : isGoal ? 'node-goal' : ''
@@ -12,7 +12,7 @@ function Node(props) {
         event.dataTransfer.setData('nodeId', target.id)
 
         setTimeout(() => {
-            target.style.opacity = 0
+            target.style.visibility = 'hidden'
         }, 0)
     }
 
@@ -24,11 +24,16 @@ function Node(props) {
     function handleDrop(event) {
         event.preventDefault()
         const { target } = event
-        const targetId = target.id
         const nodeId = event.dataTransfer.getData('nodeId')
         const node = document.getElementById(nodeId)
-        console.log(node)
-        node.style.opacity = 1
+        const targetNode = target.id.split('-')
+        const col = parseInt(targetNode.pop())
+        const row = parseInt(targetNode.pop())
+        setStartNode({ row: row, col: col })
+
+        setTimeout(() => {
+            node.style.visibility = 'visible'
+        }, 0)
     }
 
     return (

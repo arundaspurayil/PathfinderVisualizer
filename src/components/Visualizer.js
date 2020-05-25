@@ -12,17 +12,26 @@ import getNodesInShortestPath from '../algorithms/getNodesInShortestPath'
 const ROWS = 20
 const COLUMNS = 30
 
-const startNodeRow = 9
-const startNodeCol = 5
-const goalNodeRow = 3
-const goalNodeCol = 29
-
 function Visualizer() {
     const [grid, setGrid] = useState([])
     const [algorithm, setAlgorithm] = useState('dijkstra')
+    const [startNode, setStartNode] = useState({ row: 3, col: 5 })
+    const [goalNode, setGoalNode] = useState({ row: 3, col: 29 })
     const gridRef = useRef(null)
 
     useEffect(() => {
+        function createNode(row, col) {
+            return {
+                row,
+                col,
+                isStart: row === startNode.row && col === startNode.col,
+                isGoal: row === goalNode.row && col === goalNode.col,
+                distance: Infinity,
+                isVisited: false,
+                isWall: false,
+                previousNode: null,
+            }
+        }
         let nodes = []
 
         for (let row = 0; row < ROWS; row++) {
@@ -34,20 +43,7 @@ function Visualizer() {
         }
 
         setGrid(nodes)
-    }, [algorithm])
-
-    function createNode(row, col) {
-        return {
-            row,
-            col,
-            isStart: row === startNodeRow && col === startNodeCol,
-            isGoal: row === goalNodeRow && col === goalNodeCol,
-            distance: Infinity,
-            isVisited: false,
-            isWall: false,
-            previousNode: null,
-        }
-    }
+    }, [algorithm, startNode, goalNode])
 
     function animateShortestPath(nodes, length) {
         let count = 0
@@ -86,8 +82,8 @@ function Visualizer() {
 
         for (let row = 0; row < ROWS; row++) {
             for (let col = 0; col < COLUMNS; col++) {
-                const isStart = row === startNodeRow && col === startNodeCol
-                const isGoal = row === goalNodeRow && col === goalNodeCol
+                const isStart = row === startNode.row && col === startNode.col
+                const isGoal = row === goalNode.row && col === goalNode.col
 
                 const node = rowGrid[row].children[col]
                 const attribute = isStart
@@ -104,16 +100,15 @@ function Visualizer() {
         event.preventDefault()
 
         resetStyling()
-        const startNode = grid[startNodeRow][startNodeCol]
-        const goalNode = grid[goalNodeRow][goalNodeCol]
+        const start = grid[startNode.row][startNode.col]
+        const goal = grid[goalNode.row][goalNode.col]
         let visitedNodes = []
-        if (algorithm === 'dijkstra') visitedNodes = dijkstra(grid, startNode)
-        else if (algorithm === 'bfs') visitedNodes = bfs(grid, startNode)
-        else if (algorithm === 'dfs') visitedNodes = dfs(grid, startNode)
-        else if (algorithm === 'astar')
-            visitedNodes = astar(grid, startNode, goalNode)
+        if (algorithm === 'dijkstra') visitedNodes = dijkstra(grid, start)
+        else if (algorithm === 'bfs') visitedNodes = bfs(grid, start)
+        else if (algorithm === 'dfs') visitedNodes = dfs(grid, start)
+        else if (algorithm === 'astar') visitedNodes = astar(grid, start, goal)
 
-        const shortestPathToGoal = getNodesInShortestPath(goalNode)
+        const shortestPathToGoal = getNodesInShortestPath(goal)
 
         animateVisitedNodes(visitedNodes, shortestPathToGoal)
     }
@@ -122,7 +117,13 @@ function Visualizer() {
         return (
             <div className="row" key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                    return <Node key={rowIdx + nodeIdx} properties={node} />
+                    return (
+                        <Node
+                            key={rowIdx + nodeIdx}
+                            properties={node}
+                            setStartNode={setStartNode}
+                        />
+                    )
                 })}
             </div>
         )
