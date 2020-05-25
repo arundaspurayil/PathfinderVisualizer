@@ -100,7 +100,6 @@ function Visualizer() {
             }
         }
     }
-    function handleDrag(event, row, col) {}
     function runAlgorithm(event) {
         event.preventDefault()
 
@@ -123,13 +122,7 @@ function Visualizer() {
         return (
             <div className="row" key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                    return (
-                        <Node
-                            key={rowIdx + nodeIdx}
-                            properties={node}
-                            onMouseDown={handleDrag}
-                        />
-                    )
+                    return <Node key={rowIdx + nodeIdx} properties={node} />
                 })}
             </div>
         )
@@ -150,7 +143,7 @@ function Visualizer() {
             <button type="button" onClick={runAlgorithm}>
                 Visualize!
             </button>
-            <div ref={gridRef} className="grid">
+            <div id="grid" ref={gridRef} className="grid">
                 {displayGrid}
             </div>
         </div>
