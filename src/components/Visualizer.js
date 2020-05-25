@@ -62,6 +62,8 @@ function Visualizer() {
 
     function animateVisitedNodes(visitedNodes, shortestPathToGoal) {
         let count = 0
+        shortestPathToGoal.shift()
+        shortestPathToGoal.pop()
         let rowGrid = Array.from(gridRef.current.children)
         for (let node of visitedNodes) {
             setTimeout(function () {
@@ -122,6 +124,7 @@ function Visualizer() {
                             key={rowIdx + nodeIdx}
                             properties={node}
                             setStartNode={setStartNode}
+                            setGoalNode={setGoalNode}
                         />
                     )
                 })}
