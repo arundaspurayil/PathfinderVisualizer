@@ -10,11 +10,20 @@ export default function astar(grid, startNode, goalNode) {
         sortNodesByDistance(queue)
         const currentNode = queue.shift()
         currentNode.isVisited = true
+        if (currentNode.isWall) {
+            continue
+        }
         visitedNodes.push(currentNode)
         if (currentNode.isGoal) return visitedNodes
 
         const neighbors = getNeighbors(grid, currentNode)
-        neighbors.forEach((node) => {
+        for (const node of neighbors) {
+            if (node.isWall) {
+                const { row, col } = node
+                if (grid[row + 1][col - 1].isWall) break
+                if (grid[row - 1][col + 1].isWall) break
+            }
+
             let stepCost =
                 node.row - currentNode.row === 0 ||
                 node.col - currentNode.col === 0
@@ -31,7 +40,7 @@ export default function astar(grid, startNode, goalNode) {
                 queue.push(node)
                 visitedNodes.push(node)
             }
-        })
+        }
     }
     return visitedNodes
 }
@@ -48,26 +57,25 @@ function getNeighbors(grid, node) {
     if (col > 0) neighbors.push(grid[row][col - 1])
     if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1])
 
+    //if bottom and right nodes added then you can add diagonal
     //get diagonals
-    if (row >= 0 && col >= 0) {
+    if (
+        row > 0 &&
+        col > 0 &&
+        row < grid.length - 1 &&
+        col < grid[0].length - 1
+    ) {
         neighbors.push(grid[row + 1][col + 1])
-    }
-    if (row <= grid.length - 1 && col <= grid[0].length - 1) {
-        neighbors.push(grid[row - 1][col - 1])
         neighbors.push(grid[row + 1][col - 1])
         neighbors.push(grid[row - 1][col + 1])
+        neighbors.push(grid[row - 1][col - 1])
     }
+
+    console.log(node)
+    console.log(neighbors)
     return neighbors.filter((neighbor) => !neighbor.isVisited)
 }
 
 function sortNodesByDistance(nodes) {
     nodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance)
-}
-function updateNeighbors(grid, node) {
-    let neighbors = getNeighbors(grid, node)
-    // for each neighbor
-    for (let neighbor of neighbors) {
-        neighbor.distance = node.distance + 1
-        neighbor.previousNode = node
-    }
 }

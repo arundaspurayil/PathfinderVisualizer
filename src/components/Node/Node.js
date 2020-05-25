@@ -60,9 +60,13 @@ function Node(props) {
             onDragStart={handleDragStart}
             onDragOver={handleOnDragOver}
             onDrop={handleDrop}
-            onMouseDown={(event) => {
-                handleMouseDown(event, row, col)
-            }}
+            onMouseDown={
+                isStart || isGoal
+                    ? null
+                    : (event) => {
+                          handleMouseDown(event, row, col)
+                      }
+            }
             onMouseMove={(event) => {
                 handleMouseMove(event, row, col)
             }}
