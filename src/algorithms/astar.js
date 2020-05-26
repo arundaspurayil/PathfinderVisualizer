@@ -71,8 +71,6 @@ function getNeighbors(grid, node) {
         neighbors.push(grid[row - 1][col - 1])
     }
 
-    console.log(node)
-    console.log(neighbors)
     return neighbors.filter((neighbor) => !neighbor.isVisited)
 }
 

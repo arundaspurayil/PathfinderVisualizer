@@ -6,7 +6,7 @@ function Node(props) {
         setStartNode,
         setGoalNode,
         handleMouseDown,
-        handleMouseMove,
+        handleMouseEnter,
         handleMouseUp,
     } = props
     const { isStart, isGoal, isWall, row, col } = props.properties
@@ -67,8 +67,8 @@ function Node(props) {
                           handleMouseDown(event, row, col)
                       }
             }
-            onMouseMove={(event) => {
-                handleMouseMove(event, row, col)
+            onMouseEnter={(event) => {
+                handleMouseEnter(event, row, col)
             }}
             onMouseUp={handleMouseUp}
             id={`node-${row}-${col}`}

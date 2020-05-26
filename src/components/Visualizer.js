@@ -47,8 +47,8 @@ function Visualizer() {
             return nodes
         }
 
-        if (!mouseDown) setGrid(createGrid())
-    }, [algorithm, startNode, goalNode, mouseDown])
+        setGrid(createGrid())
+    }, [algorithm, startNode, goalNode])
 
     function checkIfWall(row, col) {
         const element = document.getElementById(`node-${row}-${col}`)
@@ -130,17 +130,35 @@ function Visualizer() {
     }
 
     function handleMouseDown(event, row, col) {
-        event.preventDefault()
+        setGrid(getGridWithWalls(row, col))
         setMouseDown(true)
 
-        document.getElementById(`node-${row}-${col}`).className += ' node-wall'
+        /*
+        const node = document.getElementById(`node-${row}-${col}`)
+        let className = ''
+        if (node.className.includes('node-wall')) {
+            className = node.className.replace('node-wall', '')
+        } else {
+            className = 'node node-wall'
+        }
+        node.className = className
+        */
     }
 
-    function handleMouseMove(event, row, col) {
-        event.preventDefault()
-        if (mouseDown)
-            document.getElementById(`node-${row}-${col}`).className +=
-                ' node-wall'
+    function handleMouseEnter(event, row, col) {
+        if (!mouseDown) return
+        setGrid(getGridWithWalls(row, col))
+    }
+
+    function getGridWithWalls(row, col) {
+        const newGrid = [...grid]
+        const node = newGrid[row][col]
+        const newNode = {
+            ...node,
+            isWall: !node.isWall,
+        }
+        newGrid[row][col] = newNode
+        return newGrid
     }
 
     function handleMouseUp(event) {
@@ -158,7 +176,7 @@ function Visualizer() {
                             setStartNode={setStartNode}
                             setGoalNode={setGoalNode}
                             handleMouseDown={handleMouseDown}
-                            handleMouseMove={handleMouseMove}
+                            handleMouseEnter={handleMouseEnter}
                             handleMouseUp={handleMouseUp}
                         />
                     )
