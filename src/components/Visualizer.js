@@ -119,6 +119,7 @@ function Visualizer() {
         const start = grid[startNode.row][startNode.col]
         const goal = grid[goalNode.row][goalNode.col]
         let visitedNodes = []
+        console.log(goal)
         if (algorithm === 'dijkstra') visitedNodes = dijkstra(grid, start)
         else if (algorithm === 'bfs') visitedNodes = bfs(grid, start)
         else if (algorithm === 'dfs') visitedNodes = dfs(grid, start)
@@ -130,40 +131,46 @@ function Visualizer() {
     }
 
     function handleMouseDown(event, row, col) {
-        setGrid(getGridWithWalls(row, col))
+        //setGrid(getGridWithWalls(row, col))
         setMouseDown(true)
-
-        /*
-        const node = document.getElementById(`node-${row}-${col}`)
-        let className = ''
-        if (node.className.includes('node-wall')) {
-            className = node.className.replace('node-wall', '')
-        } else {
-            className = 'node node-wall'
-        }
-        node.className = className
-        */
+        let rowGrid = Array.from(gridRef.current.children)
+        const node = rowGrid[row].children[col]
+        const attribute = grid[row][col].isWall ? 'node' : 'node node-wall'
+        node.setAttribute('class', attribute)
     }
 
     function handleMouseEnter(event, row, col) {
         if (!mouseDown) return
-        setGrid(getGridWithWalls(row, col))
-    }
+        let rowGrid = Array.from(gridRef.current.children)
+        const node = rowGrid[row].children[col]
+        const attribute = grid[row][col].isWall ? 'node' : 'node node-wall'
 
-    function getGridWithWalls(row, col) {
-        const newGrid = [...grid]
-        const node = newGrid[row][col]
-        const newNode = {
-            ...node,
-            isWall: !node.isWall,
-        }
-        newGrid[row][col] = newNode
-        return newGrid
+        node.setAttribute('class', attribute)
     }
 
     function handleMouseUp(event) {
         event.preventDefault()
         setMouseDown(false)
+
+        const newGrid = [...grid]
+        let rowGrid = Array.from(gridRef.current.children)
+        for (let row = 0; row < ROWS; row++) {
+            for (let col = 0; col < COLUMNS; col++) {
+                const node = rowGrid[row].children[col]
+
+                if (node.className.includes('node-wall')) {
+                    newGrid[row][col].isWall = true
+                } else {
+                    newGrid[row][col].isWall = false
+                }
+                //Do this a better way
+                newGrid[row][col].previousNode = null
+                newGrid[row][col].distance = Infinity
+                newGrid[row][col].isVisited = false
+            }
+        }
+
+        setGrid(newGrid)
     }
     const displayGrid = grid.map((row, rowIdx) => {
         return (
