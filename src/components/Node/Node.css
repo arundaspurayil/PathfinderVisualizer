@@ -1,13 +1,7 @@
 .node {
-    background: #fff;
-    border: 1px solid #999;
-    float: left;
-    width: 34px;
-
-    height: 34px;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
+    width: 25px;
+    height: 25px;
+    outline: 1px solid rgb(175, 216, 248);
 }
 
 .node-start {
@@ -19,13 +13,48 @@
 }
 
 .node-visited {
-    background-color: yellow;
+    background-color: rgba(0, 190, 218, 0.75);
+    animation-name: visited;
+    animation-duration: 3s;
 }
 
 .node-shortest-path {
-    background-color: black;
+    background-color: rgb(255, 254, 106);
+    animation-name: visited;
+    animation-duration: 3s;
+    animation-delay: 3s;
 }
 
 .node-wall {
     background-color: gray;
+    animation-name: wall;
+    animation-duration: 0.2s;
+}
+
+@keyframes wall {
+    0% {
+        transform: scale(0.5);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes visited {
+    0% {
+        transform: scale(0.5);
+    }
+
+    50% {
+        transform: scale(0.7);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }

@@ -9,14 +9,14 @@ import astar from '../algorithms/astar'
 
 import getNodesInShortestPath from '../algorithms/getNodesInShortestPath'
 
-const ROWS = 20
-const COLUMNS = 30
+const ROWS = 25
+const COLUMNS = 45
 
 function Visualizer() {
     const [grid, setGrid] = useState([])
     const [algorithm, setAlgorithm] = useState('dijkstra')
     const [startNode, setStartNode] = useState({ row: 3, col: 5 })
-    const [goalNode, setGoalNode] = useState({ row: 3, col: 29 })
+    const [goalNode, setGoalNode] = useState({ row: 22, col: 40 })
     const [mouseDown, setMouseDown] = useState(false)
 
     const gridRef = useRef(null)
@@ -119,7 +119,6 @@ function Visualizer() {
         const start = grid[startNode.row][startNode.col]
         const goal = grid[goalNode.row][goalNode.col]
         let visitedNodes = []
-        console.log(goal)
         if (algorithm === 'dijkstra') visitedNodes = dijkstra(grid, start)
         else if (algorithm === 'bfs') visitedNodes = bfs(grid, start)
         else if (algorithm === 'dfs') visitedNodes = dfs(grid, start)
@@ -172,6 +171,7 @@ function Visualizer() {
 
         setGrid(newGrid)
     }
+
     const displayGrid = grid.map((row, rowIdx) => {
         return (
             <div className="row" key={rowIdx}>

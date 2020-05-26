@@ -56,17 +56,9 @@ function Node(props) {
     return (
         <div
             className={`node  ${propertyClassName}`}
-            draggable={isStart || isGoal ? 'true' : 'false'}
-            onDragStart={handleDragStart}
-            onDragOver={handleOnDragOver}
-            onDrop={handleDrop}
-            onMouseDown={
-                isStart || isGoal
-                    ? null
-                    : (event) => {
-                          handleMouseDown(event, row, col)
-                      }
-            }
+            onMouseDown={(event) => {
+                handleMouseDown(event, row, col)
+            }}
             onMouseEnter={(event) => {
                 handleMouseEnter(event, row, col)
             }}
