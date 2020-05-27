@@ -118,7 +118,6 @@ function Visualizer() {
         event.preventDefault()
 
         resetStyling()
-        console.log(goalNode)
         const start = grid[startNode.row][startNode.col]
         const goal = grid[goalNode.row][goalNode.col]
         let visitedNodes = []
@@ -130,7 +129,6 @@ function Visualizer() {
             visitedNodes = greedybestfirstsearch(grid, start, goal)
 
         const shortestPathToGoal = getNodesInShortestPath(goal)
-
         animateVisitedNodes(visitedNodes, shortestPathToGoal)
     }
 
@@ -198,7 +196,6 @@ function Visualizer() {
         const node = rowGrid[row].children[col]
 
         if (mouseDown) {
-            console.log('Hi')
             setMouseDown(false)
             createNewGridWithWalls()
         } else if (startMouseDown) {

@@ -6,6 +6,8 @@ function dfs(grid, startNode) {
 
     while (queue.length > 0) {
         let currentNode = queue.shift()
+        if (currentNode.isWall) continue
+
         if (currentNode.isVisited === false) {
             currentNode.isVisited = true
             visitedNodes.push(currentNode)

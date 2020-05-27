@@ -26,7 +26,8 @@ export default function greedybestfirstsearch(grid, startNode, goalNode) {
 
     while (unvisitedNodes.length > 0) {
         const currentNode = unvisitedNodes.pop()
-        currentNode.visited = true
+        currentNode.isVisited = true
+        if (currentNode.isWall) continue
         visitedNodes.push(currentNode)
         if (currentNode.isGoal) return visitedNodes
         const neighbors = getNeighbors(grid, currentNode)
@@ -34,11 +35,9 @@ export default function greedybestfirstsearch(grid, startNode, goalNode) {
             if (!node.isVisited) {
                 node.isVisited = true
                 node.distance = manhattanHeuristic(node, goalNode)
+                node.previousNode = currentNode
                 unvisitedNodes.push(node)
             }
         })
     }
-}
-function calculateHeuristic(node, goalNode) {
-    return Math.abs(node.row - goalNode.row) + Math.abs(node.col - goalNode.col)
 }
