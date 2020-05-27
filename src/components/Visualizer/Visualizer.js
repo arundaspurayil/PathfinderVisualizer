@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Node from './Node/Node'
+import Node from '../Node/Node'
 import './Visualizer.css'
 
-import dijkstra from '../algorithms/dijkstra'
-import bfs from '../algorithms/bfs'
-import dfs from '../algorithms/dfs'
-import astar from '../algorithms/astar'
+import dijkstra from '../../algorithms/dijkstra'
+import bfs from '../../algorithms/bfs'
+import dfs from '../../algorithms/dfs'
+import astar from '../../algorithms/astar'
 
-import getNodesInShortestPath from '../algorithms/getNodesInShortestPath'
+import getNodesInShortestPath from '../../algorithms/getNodesInShortestPath'
 
 const ROWS = 25
 const COLUMNS = 45
@@ -246,7 +246,7 @@ function Visualizer() {
             <button type="button" onClick={runAlgorithm}>
                 Visualize!
             </button>
-            <div id="grid" ref={gridRef} className="grid">
+            <div draggable="false" id="grid" ref={gridRef} className="grid">
                 {displayGrid}
             </div>
         </div>

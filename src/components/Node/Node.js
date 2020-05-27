@@ -33,6 +33,7 @@ function Node(props) {
             onMouseLeave={(event) => {
                 handleMouseLeave(event, row, col)
             }}
+            draggable="false"
             id={`node-${row}-${col}`}
         />
     )

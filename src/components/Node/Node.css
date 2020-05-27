@@ -22,7 +22,6 @@
     background-color: rgb(255, 254, 106);
     animation-name: visited;
     animation-duration: 3s;
-    animation-delay: 3s;
 }
 
 .node-wall {
