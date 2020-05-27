@@ -6,6 +6,7 @@ import dijkstra from '../../algorithms/dijkstra'
 import bfs from '../../algorithms/bfs'
 import dfs from '../../algorithms/dfs'
 import astar from '../../algorithms/astar'
+import greedybestfirstsearch from '../../algorithms/greedybestfirstsearch'
 
 import getNodesInShortestPath from '../../algorithms/getNodesInShortestPath'
 
@@ -125,6 +126,8 @@ function Visualizer() {
         else if (algorithm === 'bfs') visitedNodes = bfs(grid, start)
         else if (algorithm === 'dfs') visitedNodes = dfs(grid, start)
         else if (algorithm === 'astar') visitedNodes = astar(grid, start, goal)
+        else if (algorithm === 'gbfs')
+            visitedNodes = greedybestfirstsearch(grid, start, goal)
 
         const shortestPathToGoal = getNodesInShortestPath(goal)
 
@@ -240,6 +243,7 @@ function Visualizer() {
             >
                 <option value="dijkstra">Dijkstra</option>+
                 <option value="astar">A*</option>
+                <option value="gbfs">Greedy Best First Search</option>
                 <option value="bfs">BFS</option>
                 <option value="dfs">DFS</option>
             </select>
