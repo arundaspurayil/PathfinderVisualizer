@@ -20,6 +20,7 @@ import manhattanHeuristic from './heuristics'
 export default function greedybestfirstsearch(grid, startNode, goalNode) {
     let visitedNodes = []
     startNode.distance = 0
+
     let unvisitedNodes = new TinyQueue([startNode], function (node1, node2) {
         return node1.distance - node2.distance
     })
