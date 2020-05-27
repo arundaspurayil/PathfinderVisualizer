@@ -18,7 +18,8 @@ function Visualizer() {
     const [startNode, setStartNode] = useState({ row: 3, col: 5 })
     const [goalNode, setGoalNode] = useState({ row: 22, col: 40 })
     const [mouseDown, setMouseDown] = useState(false)
-
+    const [startMouseDown, setStartMouseDown] = useState(false)
+    const [goalMouseDown, setGoalMouseDown] = useState(false)
     const gridRef = useRef(null)
 
     useEffect(() => {
@@ -116,6 +117,7 @@ function Visualizer() {
         event.preventDefault()
 
         resetStyling()
+        console.log(goalNode)
         const start = grid[startNode.row][startNode.col]
         const goal = grid[goalNode.row][goalNode.col]
         let visitedNodes = []
@@ -130,27 +132,43 @@ function Visualizer() {
     }
 
     function handleMouseDown(event, row, col) {
-        //setGrid(getGridWithWalls(row, col))
-        setMouseDown(true)
         let rowGrid = Array.from(gridRef.current.children)
         const node = rowGrid[row].children[col]
-        const attribute = grid[row][col].isWall ? 'node' : 'node node-wall'
-        node.setAttribute('class', attribute)
+        if (startNode.row === row && startNode.col === col)
+            setStartMouseDown(true)
+        else if (goalNode.row === row && goalNode.col === col)
+            setGoalMouseDown(true)
+        else {
+            setMouseDown(true)
+            const attribute = grid[row][col].isWall ? 'node' : 'node node-wall'
+            node.setAttribute('class', attribute)
+        }
     }
-
+    function handleMouseLeave(event, row, col) {
+        if (startMouseDown || goalMouseDown) {
+            let rowGrid = Array.from(gridRef.current.children)
+            const node = rowGrid[row].children[col]
+            const attribute = grid[row][col].isWall ? 'node node-wall' : 'node'
+            node.setAttribute('class', attribute)
+        }
+    }
     function handleMouseEnter(event, row, col) {
-        if (!mouseDown) return
+        if (!startMouseDown && !goalMouseDown && !mouseDown) return
+
         let rowGrid = Array.from(gridRef.current.children)
         const node = rowGrid[row].children[col]
-        const attribute = grid[row][col].isWall ? 'node' : 'node node-wall'
+        let attribute = ''
+        if (startMouseDown) {
+            attribute = 'node node-start'
+        } else if (goalMouseDown) {
+            attribute = 'node node-goal'
+        } else {
+            attribute = grid[row][col].isWall ? 'node' : 'node node-wall'
+        }
 
         node.setAttribute('class', attribute)
     }
-
-    function handleMouseUp(event) {
-        event.preventDefault()
-        setMouseDown(false)
-
+    function createNewGridWithWalls() {
         const newGrid = [...grid]
         let rowGrid = Array.from(gridRef.current.children)
         for (let row = 0; row < ROWS; row++) {
@@ -171,6 +189,25 @@ function Visualizer() {
 
         setGrid(newGrid)
     }
+    function handleMouseUp(event, row, col) {
+        event.preventDefault()
+        let rowGrid = Array.from(gridRef.current.children)
+        const node = rowGrid[row].children[col]
+
+        if (mouseDown) {
+            console.log('Hi')
+            setMouseDown(false)
+            createNewGridWithWalls()
+        } else if (startMouseDown) {
+            setStartMouseDown(false)
+            setStartNode({ row: row, col: col })
+            node.setAttribute('class', 'node node-start')
+        } else if (goalMouseDown) {
+            setGoalMouseDown(false)
+            setGoalNode({ row: row, col: col })
+            node.setAttribute('class', 'node node-goal')
+        }
+    }
 
     const displayGrid = grid.map((row, rowIdx) => {
         return (
@@ -185,6 +222,7 @@ function Visualizer() {
                             handleMouseDown={handleMouseDown}
                             handleMouseEnter={handleMouseEnter}
                             handleMouseUp={handleMouseUp}
+                            handleMouseLeave={handleMouseLeave}
                         />
                     )
                 })}
