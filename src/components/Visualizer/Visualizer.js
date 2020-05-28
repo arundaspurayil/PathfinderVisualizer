@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Node from '../Node/Node'
 import './Visualizer.css'
 
@@ -23,8 +23,8 @@ function Visualizer() {
     const [goalMouseDown, setGoalMouseDown] = useState(false)
     const gridRef = useRef(null)
 
-    useEffect(() => {
-        function createNode(row, col) {
+    const createNode = useCallback(
+        (row, col, checkWalls) => {
             return {
                 row,
                 col,
@@ -32,25 +32,30 @@ function Visualizer() {
                 isGoal: row === goalNode.row && col === goalNode.col,
                 distance: Infinity,
                 isVisited: false,
-                isWall: checkIfWall(row, col),
+                isWall: checkWalls ? checkIfWall(row, col) : false,
                 previousNode: null,
             }
-        }
-        function createGrid() {
+        },
+        [startNode, goalNode]
+    )
+    const createGrid = useCallback(
+        (checkWalls = true) => {
             let nodes = []
 
             for (let row = 0; row < ROWS; row++) {
                 let currentRow = []
                 for (let col = 0; col < COLUMNS; col++) {
-                    currentRow.push(createNode(row, col))
+                    currentRow.push(createNode(row, col, checkWalls))
                 }
                 nodes.push(currentRow)
             }
             return nodes
-        }
-
+        },
+        [createNode]
+    )
+    useEffect(() => {
         setGrid(createGrid())
-    }, [algorithm, startNode, goalNode])
+    }, [algorithm, startNode, goalNode, createGrid, createNode])
 
     function checkIfWall(row, col) {
         const element = document.getElementById(`node-${row}-${col}`)
@@ -113,6 +118,12 @@ function Visualizer() {
                 node.setAttribute('class', attribute)
             }
         }
+    }
+    function clearGrid(event) {
+        event.preventDefault()
+        const newGrid = createGrid(false)
+        setGrid(newGrid)
+        resetStyling()
     }
     function runAlgorithm(event) {
         event.preventDefault()
@@ -208,7 +219,6 @@ function Visualizer() {
             node.setAttribute('class', 'node node-goal')
         }
     }
-
     const displayGrid = grid.map((row, rowIdx) => {
         return (
             <div className="row" key={rowIdx}>
@@ -217,8 +227,6 @@ function Visualizer() {
                         <Node
                             key={rowIdx + nodeIdx}
                             properties={node}
-                            setStartNode={setStartNode}
-                            setGoalNode={setGoalNode}
                             handleMouseDown={handleMouseDown}
                             handleMouseEnter={handleMouseEnter}
                             handleMouseUp={handleMouseUp}
@@ -229,7 +237,6 @@ function Visualizer() {
             </div>
         )
     })
-
     return (
         <div>
             <select
@@ -246,6 +253,9 @@ function Visualizer() {
             </select>
             <button type="button" onClick={runAlgorithm}>
                 Visualize!
+            </button>
+            <button type="button" onClick={clearGrid}>
+                Clear
             </button>
             <div draggable="false" id="grid" ref={gridRef} className="grid">
                 {displayGrid}
