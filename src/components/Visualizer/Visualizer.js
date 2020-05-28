@@ -7,6 +7,7 @@ import bfs from '../../algorithms/bfs'
 import dfs from '../../algorithms/dfs'
 import astar from '../../algorithms/astar'
 import greedybestfirstsearch from '../../algorithms/greedybestfirstsearch'
+import animateVisitedNodes from '../../animate'
 
 import getNodesInShortestPath from '../../algorithms/getNodesInShortestPath'
 
@@ -22,6 +23,12 @@ function Visualizer() {
     const [startMouseDown, setStartMouseDown] = useState(false)
     const [goalMouseDown, setGoalMouseDown] = useState(false)
     const gridRef = useRef(null)
+
+    function checkIfWall(row, col) {
+        const element = document.getElementById(`node-${row}-${col}`)
+        if (element && element.className.includes('node-wall')) return true
+        return false
+    }
 
     const createNode = useCallback(
         (row, col, checkWalls) => {
@@ -57,44 +64,22 @@ function Visualizer() {
         setGrid(createGrid())
     }, [algorithm, startNode, goalNode, createGrid, createNode])
 
-    function checkIfWall(row, col) {
-        const element = document.getElementById(`node-${row}-${col}`)
-        if (element && element.className.includes('node-wall')) return true
-        return false
-    }
+    function runAlgorithm(event) {
+        event.preventDefault()
 
-    function animateShortestPath(nodes, length) {
-        let count = 0
-        let rowGrid = Array.from(gridRef.current.children)
+        resetStyling()
+        const start = grid[startNode.row][startNode.col]
+        const goal = grid[goalNode.row][goalNode.col]
+        let visitedNodes = []
+        if (algorithm === 'dijkstra') visitedNodes = dijkstra(grid, start)
+        else if (algorithm === 'bfs') visitedNodes = bfs(grid, start)
+        else if (algorithm === 'dfs') visitedNodes = dfs(grid, start)
+        else if (algorithm === 'astar') visitedNodes = astar(grid, start, goal)
+        else if (algorithm === 'gbfs')
+            visitedNodes = greedybestfirstsearch(grid, start, goal)
 
-        for (let node of nodes) {
-            setTimeout(function () {
-                rowGrid[node.row].children[node.col].setAttribute(
-                    'class',
-                    'node node-shortest-path'
-                )
-            }, 100 * count)
-            count += 1
-        }
-    }
-
-    function animateVisitedNodes(visitedNodes, shortestPathToGoal) {
-        let count = 0
-        shortestPathToGoal.shift()
-        shortestPathToGoal.pop()
-        let rowGrid = Array.from(gridRef.current.children)
-        for (let node of visitedNodes) {
-            setTimeout(function () {
-                rowGrid[node.row].children[node.col].attributes[0].nodeValue +=
-                    ' node-visited'
-            }, 10 * count)
-            if (node.isGoal) {
-                setTimeout(function () {
-                    animateShortestPath(shortestPathToGoal)
-                }, 10 * count)
-            }
-            count += 1
-        }
+        const shortestPathToGoal = getNodesInShortestPath(goal)
+        animateVisitedNodes(visitedNodes, shortestPathToGoal, gridRef)
     }
 
     function resetStyling() {
@@ -124,23 +109,6 @@ function Visualizer() {
         const newGrid = createGrid(false)
         setGrid(newGrid)
         resetStyling()
-    }
-    function runAlgorithm(event) {
-        event.preventDefault()
-
-        resetStyling()
-        const start = grid[startNode.row][startNode.col]
-        const goal = grid[goalNode.row][goalNode.col]
-        let visitedNodes = []
-        if (algorithm === 'dijkstra') visitedNodes = dijkstra(grid, start)
-        else if (algorithm === 'bfs') visitedNodes = bfs(grid, start)
-        else if (algorithm === 'dfs') visitedNodes = dfs(grid, start)
-        else if (algorithm === 'astar') visitedNodes = astar(grid, start, goal)
-        else if (algorithm === 'gbfs')
-            visitedNodes = greedybestfirstsearch(grid, start, goal)
-
-        const shortestPathToGoal = getNodesInShortestPath(goal)
-        animateVisitedNodes(visitedNodes, shortestPathToGoal)
     }
 
     function handleMouseDown(event, row, col) {
