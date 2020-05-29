@@ -1,4 +1,4 @@
-function animateShortestPath(nodes, length, gridRef) {
+function animateShortestPath(nodes, gridRef) {
     let count = 0
     let rowGrid = Array.from(gridRef.current.children)
 
@@ -29,7 +29,7 @@ export default function animateVisitedNodes(
         }, 10 * count)
         if (node.isGoal) {
             setTimeout(function () {
-                animateShortestPath(shortestPathToGoal)
+                animateShortestPath(shortestPathToGoal, gridRef)
             }, 10 * count)
         }
         count += 1
