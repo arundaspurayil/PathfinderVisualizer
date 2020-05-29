@@ -8,6 +8,7 @@ import dfs from '../../algorithms/dfs'
 import astar from '../../algorithms/astar'
 import greedybestfirstsearch from '../../algorithms/greedybestfirstsearch'
 import animateVisitedNodes from '../../animate'
+import recursiveDivisionMaze from '../../algorithms/recursivedivisionmaze'
 
 import getNodesInShortestPath from '../../algorithms/getNodesInShortestPath'
 
@@ -187,6 +188,11 @@ function Visualizer() {
             node.setAttribute('class', 'node node-goal')
         }
     }
+    function createMaze() {
+        const newGrid = [...grid]
+        recursiveDivisionMaze(newGrid, 0, 0, newGrid[0].length, newGrid.length)
+        setGrid(newGrid)
+    }
     const displayGrid = grid.map((row, rowIdx) => {
         return (
             <div className="row" key={rowIdx}>
@@ -224,6 +230,9 @@ function Visualizer() {
             </button>
             <button type="button" onClick={clearGrid}>
                 Clear
+            </button>
+            <button type="button" onClick={createMaze}>
+                Maze
             </button>
             <div draggable="false" id="grid" ref={gridRef} className="grid">
                 {displayGrid}
