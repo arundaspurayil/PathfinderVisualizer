@@ -7,19 +7,19 @@ import bfs from '../../algorithms/bfs'
 import dfs from '../../algorithms/dfs'
 import astar from '../../algorithms/astar'
 import greedybestfirstsearch from '../../algorithms/greedybestfirstsearch'
-import animateVisitedNodes from '../../animate'
+import { animateVisitedNodes, animateMaze } from '../../animate'
 import recursiveDivisionMaze from '../../algorithms/recursivedivisionmaze'
 
 import getNodesInShortestPath from '../../algorithms/getNodesInShortestPath'
 
 const ROWS = 25
-const COLUMNS = 45
+const COLUMNS = 35
 
 function Visualizer() {
     const [grid, setGrid] = useState([])
     const [algorithm, setAlgorithm] = useState('dijkstra')
     const [startNode, setStartNode] = useState({ row: 3, col: 5 })
-    const [goalNode, setGoalNode] = useState({ row: 22, col: 40 })
+    const [goalNode, setGoalNode] = useState({ row: 22, col: 25 })
     const [mouseDown, setMouseDown] = useState(false)
     const [startMouseDown, setStartMouseDown] = useState(false)
     const [goalMouseDown, setGoalMouseDown] = useState(false)
@@ -188,10 +188,35 @@ function Visualizer() {
             node.setAttribute('class', 'node node-goal')
         }
     }
+    function animateWalls(nodesToAnimate) {
+        let rows = [0, grid.length - 1]
+        let cols = [0, grid[0].length - 1]
+
+        for (let row of rows) {
+            for (let y = 1; y < grid[0].length - 1; y++) {
+                nodesToAnimate.push(grid[row][y])
+            }
+        }
+        for (let col of cols) {
+            for (let x = 0; x < grid.length; x++) {
+                nodesToAnimate.push(grid[x][col])
+            }
+        }
+    }
     function createMaze() {
         const newGrid = [...grid]
-        recursiveDivisionMaze(newGrid, 0, 0, newGrid[0].length, newGrid.length)
-        setGrid(newGrid)
+        let nodesToAnimate = []
+        animateWalls(nodesToAnimate)
+        recursiveDivisionMaze(
+            newGrid,
+            2,
+            newGrid.length - 3,
+            2,
+            newGrid[0].length - 2,
+            true,
+            nodesToAnimate
+        )
+        animateMaze(nodesToAnimate, gridRef)
     }
     const displayGrid = grid.map((row, rowIdx) => {
         return (
