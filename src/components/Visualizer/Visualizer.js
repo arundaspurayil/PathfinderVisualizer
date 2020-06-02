@@ -213,7 +213,6 @@ function Visualizer() {
             newGrid.length - 3,
             2,
             newGrid[0].length - 2,
-            true,
             nodesToAnimate
         )
         animateMaze(nodesToAnimate, gridRef)
