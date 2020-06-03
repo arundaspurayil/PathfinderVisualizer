@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Node from './Node'
+import Sidebar from './Sidebar'
 import '../styles/Visualizer.css'
+import '../styles/Main.css'
 
 import dijkstra from '../algorithms/dijkstra'
 import bfs from '../algorithms/bfs'
@@ -235,9 +237,9 @@ function Visualizer() {
             </div>
         )
     })
-    return (
-        <div>
+    /*
             <select
+                className="col-span-3"
                 value={algorithm}
                 onChange={(event) => {
                     setAlgorithm(event.target.value)
@@ -249,16 +251,21 @@ function Visualizer() {
                 <option value="bfs">BFS</option>
                 <option value="dfs">DFS</option>
             </select>
-            <button type="button" onClick={runAlgorithm}>
+            <button className="col-span-1" type="button" onClick={runAlgorithm}>
                 Visualize!
             </button>
-            <button type="button" onClick={clearGrid}>
+            <button className="col-span-1" type="button" onClick={clearGrid}>
                 Clear
             </button>
-            <button type="button" onClick={createMaze}>
+            <button className="col-span-1" type="button" onClick={createMaze}>
                 Maze
             </button>
-            <div draggable="false" id="grid" ref={gridRef} className="grid">
+    */
+    return (
+        <div className="grid grid-cols-12">
+            <Sidebar />
+
+            <div id="grid" ref={gridRef} className="display-grid col-span-10">
                 {displayGrid}
             </div>
         </div>
