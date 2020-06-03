@@ -88,5 +88,5 @@ export default function recursiveDivisionMaze(
 function chooseOrientation(width, height) {
     if (width < height) return true
     else if (height < width) return false
-    else return Math.random() >= 0.5 ? true 
+    else return Math.random() >= 0.5 ? true : false
 }

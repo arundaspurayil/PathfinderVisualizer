@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import Node from '../Node/Node'
-import './Visualizer.css'
+import Node from './Node'
+import '../styles/Visualizer.css'
 
-import dijkstra from '../../algorithms/dijkstra'
-import bfs from '../../algorithms/bfs'
-import dfs from '../../algorithms/dfs'
-import astar from '../../algorithms/astar'
-import greedybestfirstsearch from '../../algorithms/greedybestfirstsearch'
-import { animateVisitedNodes, animateMaze } from '../../animate'
-import recursiveDivisionMaze from '../../algorithms/recursivedivisionmaze'
+import dijkstra from '../algorithms/dijkstra'
+import bfs from '../algorithms/bfs'
+import dfs from '../algorithms/dfs'
+import astar from '../algorithms/astar'
+import greedybestfirstsearch from '../algorithms/greedybestfirstsearch'
+import { animateVisitedNodes, animateMaze } from '../animate'
+import recursiveDivisionMaze from '../algorithms/recursivedivisionmaze'
 
-import getNodesInShortestPath from '../../algorithms/getNodesInShortestPath'
+import getNodesInShortestPath from '../algorithms/getNodesInShortestPath'
 
 const ROWS = 25
 const COLUMNS = 35

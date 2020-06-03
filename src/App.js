@@ -1,6 +1,6 @@
 import React from 'react'
-import Visualizer from './components/Visualizer/Visualizer'
-import './App.css'
+import Visualizer from './components/Visualizer'
+import './styles/App.css'
 
 function App() {
     return (
