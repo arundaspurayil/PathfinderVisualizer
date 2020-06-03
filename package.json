@@ -11,6 +11,7 @@
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-scripts": "3.4.1",
+        "react-slidedown": "^2.4.5",
         "tailwindcss": "^1.4.6",
         "tinyqueue": "^2.0.3"
     },
