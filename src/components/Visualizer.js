@@ -67,9 +67,7 @@ function Visualizer() {
         setGrid(createGrid())
     }, [algorithm, startNode, goalNode, createGrid, createNode])
 
-    function runAlgorithm(event) {
-        event.preventDefault()
-
+    function runAlgorithm() {
         resetStyling()
         const start = grid[startNode.row][startNode.col]
         const goal = grid[goalNode.row][goalNode.col]
@@ -107,8 +105,7 @@ function Visualizer() {
             }
         }
     }
-    function clearGrid(event) {
-        event.preventDefault()
+    function clearGrid() {
         const newGrid = createGrid(false)
         setGrid(newGrid)
         resetStyling()
@@ -261,9 +258,15 @@ function Visualizer() {
                 Maze
             </button>
     */
+
     return (
         <div className="grid grid-cols-12">
-            <Sidebar />
+            <Sidebar
+                setAlgorithm={setAlgorithm}
+                runAlgorithm={runAlgorithm}
+                clearGrid={clearGrid}
+                createMaze={createMaze}
+            />
 
             <div id="grid" ref={gridRef} className="display-grid col-span-10">
                 {displayGrid}
